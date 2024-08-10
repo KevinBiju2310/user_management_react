@@ -1,5 +1,7 @@
 const bcrypt = require("bcryptjs");
+const multer = require("multer");
 const User = require("../Model/userSchema");
+
 
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -16,12 +18,13 @@ const signup = async (req, res) => {
 
 const signin = async (req, res) => {
   const { email, password } = req.body;
-  try { 
+  try {
     const user = await User.findOne({ email });
+    console.log(user);
     if (user) {
       const checkPassword = await bcrypt.compare(password, user.password);
       if (checkPassword) {
-        res.status(201).json({ message: "SignIn successfull", user: user });
+        res.status(201).json({ message: "SignIn successfull", user });
       } else {
         res.status(400).send({ message: "Wrong Password" });
       }
@@ -33,7 +36,40 @@ const signin = async (req, res) => {
   }
 };
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage: storage }).single("profileImage");
+
+const uploadProfileImage = (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(500).send({ error: "Error Uploading file" });
+    }
+    const { email } = req.body;
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).send({ error: "User not found" });
+      }
+      user.profileImage = req.file.filename;
+      await user.save();
+
+      res
+        .status(200)
+        .json({ message: "Profile image uploaded successfully", user });
+    } catch (error) {
+      res.status(500).send({ error: "Error uploading profile image" });
+    }
+  });
+};
 module.exports = {
   signup,
   signin,
+  uploadProfileImage,
 };

@@ -12,6 +12,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
     },
     signIn: (state, action) => {
+      console.log("user state : ",action.payload);
       state.user = { ...action.payload };
       state.isAuthenticated = true;
     },

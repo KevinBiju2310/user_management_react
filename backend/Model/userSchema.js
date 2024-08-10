@@ -13,8 +13,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profileImage: {
+    type: String,
+    default: null,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-
-const User = mongoose.model("users",userSchema);
+const User = mongoose.model("users", userSchema);
 module.exports = User;

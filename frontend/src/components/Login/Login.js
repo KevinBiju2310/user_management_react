@@ -6,7 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [signState, setSignState] = useState("Sign Up");
+  const [signState, setSignState] = useState("Sign In");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +28,7 @@ const Login = () => {
         setName("");
         setEmail("");
         setPassword("");
-        navigate("/home");
+        setSignState("Sign In");
       } catch (error) {
         console.error("Error signing up:", error);
       }
@@ -39,11 +39,15 @@ const Login = () => {
           password,
         });
         console.log("SignIn Message: ", response.data.message);
-        const { name } = response.data.user;
-        dispatch(signIn({ name, email }));
-        setEmail("");
-        setPassword("");
-        navigate("/home");
+        const { name, profileImage, isAdmin } = response.data.user;
+        if (isAdmin) {
+          navigate("/admin-dashboard")
+        } else {
+          dispatch(signIn({ name, email, profileImage }));
+          setEmail("");
+          setPassword("");
+          navigate("/home");
+        }
       } catch (error) {
         console.error("Error signing in:", error);
       }
