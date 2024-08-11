@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
-const multer = require("multer");
+const upload = require("../Multer/multer");
 const User = require("../Model/userSchema");
-
 
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -35,16 +34,6 @@ const signin = async (req, res) => {
     res.status(500).send({ error: "Error Signing In" });
   }
 };
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: storage }).single("profileImage");
 
 const uploadProfileImage = (req, res) => {
   upload(req, res, async (err) => {

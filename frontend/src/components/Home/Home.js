@@ -9,8 +9,8 @@ const Home = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  console.log(user.profileImage)
-  console.log(user.name)
+  console.log(user.profileImage);
+  console.log(user.name);
   const handleLogout = () => {
     dispatch(logOut());
     navigate("/");
@@ -26,9 +26,8 @@ const Home = () => {
   }
 
   const profileImageUrl = user.profileImage
-  ? `http://localhost:5000/uploads/${user.profileImage}`
-  : "https://via.placeholder.com/150"; 
-
+    ? `http://localhost:5000/uploads/${user.profileImage}`
+    : "https://via.placeholder.com/150";
 
   return (
     <div className="home-container">
