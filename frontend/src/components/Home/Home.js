@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logOut } from "../../slices/authSlice";
-import "./Home.css";
+import styles from "./Home.module.css";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -30,18 +30,35 @@ const Home = () => {
     : "https://via.placeholder.com/150";
 
   return (
-    <div className="home-container">
-      <div className="card">
-        <h2>Welcome to Home Page</h2>
-        <img src={profileImageUrl} alt="Profile" className="profile-image" />
-        <h3>Welcome, {user.name}</h3>
-        <p>Email: {user.email}</p>
-        <button onClick={handleLogout} className="logout-button">
-          Log Out
-        </button>
-        <button onClick={handleEditProfile} className="edit-profile-button">
-          Edit Profile
-        </button>
+    <div className={styles.homeContainer}>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <img
+            src={profileImageUrl}
+            alt="Profile"
+            className={styles.profileImage}
+          />
+          <h2 className={styles.title}>{user.name}</h2>
+          <h3 className={styles.subtitle}>{user.email}</h3>
+        </div>
+        <div className={styles.cardBody}>
+          <p className={styles.description}>
+            Welcome to your profile page. Here you can view and edit your
+            information.
+          </p>
+          <button
+            className={`${styles.button} ${styles.logoutButton}`}
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+          <button
+            className={`${styles.button} ${styles.editProfileButton}`}
+            onClick={handleEditProfile}
+          >
+            Edit Profile
+          </button>
+        </div>
       </div>
     </div>
   );

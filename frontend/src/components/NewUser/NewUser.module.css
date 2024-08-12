@@ -1,19 +1,25 @@
 .newUserContainer {
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
+  padding: 40px;
+  border-radius: 16px;
+  max-width: 480px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh; 
+  height: 90vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .newUserTitle {
   text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 32px;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .newUserForm {
@@ -23,25 +29,64 @@
 }
 
 .newUserInput {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 2px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.newUserInput:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
 }
 
 .newUserInputFile {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
 }
 
 .newUserButton {
-  background-color: #007bff;
+  background-color: #3498db;
   color: #fff;
-  padding: 10px;
+  padding: 15px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .newUserButton:hover {
-  background-color: #0056b3;
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.newUserButton:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 600px) {
+  .newUserContainer {
+    padding: 20px;
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  .newUserTitle {
+    font-size: 24px;
+  }
+
+  .newUserInput,
+  .newUserButton {
+    font-size: 14px;
+  }
 }

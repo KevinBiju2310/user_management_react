@@ -9,6 +9,9 @@ import {
 import axios from "axios";
 import "./Admin.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import Swal from "sweetalert2";
+import { logOut } from "../../slices/authSlice";
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -17,6 +20,7 @@ const Admin = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -42,13 +46,36 @@ const Admin = () => {
     setFilteredUsers(filteredUsers);
   };
 
+  const handleDelete = (userId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`http://localhost:5000/admin/user/${userId}`);
+          setUsers(users.filter((user) => user._id !== userId));
+          setFilteredUsers(filteredUsers.filter((user) => user._id !== userId));
+          Swal.fire("Deleted!", "User has been deleted.", "success");
+        } catch (error) {
+          Swal.fire("Error!", "There was an error deleting the user.", "error");
+        }
+      }
+    });
+  };
+
   return (
     <div className="main-container">
       <div className="header">
         <div className="search-bar">
           <input
             type="text"
-            placeholder="search users..."
+            placeholder="Search users..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -67,7 +94,12 @@ const Admin = () => {
             {" "}
             <FaUserPlus /> Create User
           </button>
-          <button>
+          <button
+            onClick={() => {
+              dispatch(logOut());
+              navigate("/");
+            }}
+          >
             {" "}
             <FaSignOutAlt />
             Logout
@@ -120,11 +152,19 @@ const Admin = () => {
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>
-                    <button>
+                    <button
+                      onClick={() => {
+                        navigate(`/edit-user/${user._id}`);
+                      }}
+                    >
                       {" "}
                       <FaEdit /> Edit
                     </button>
-                    <button>
+                    <button
+                      onClick={() => {
+                        handleDelete(user._id);
+                      }}
+                    >
                       {" "}
                       <FaTrashAlt />
                       Delete

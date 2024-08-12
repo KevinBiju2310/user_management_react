@@ -56,7 +56,7 @@ const Login = () => {
 
   return (
     <div className="container">
-      <div className="form-container">
+      <div className="formContainer">
         <h1 className="heading">{signState}</h1>
         <form className="form" onSubmit={handleSubmit}>
           {signState === "Sign Up" ? (
