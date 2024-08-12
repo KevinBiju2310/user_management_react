@@ -23,9 +23,9 @@ const signin = async (req, res) => {
     if (user) {
       const checkPassword = await bcrypt.compare(password, user.password);
       if (checkPassword) {
-        res.status(201).json({ message: "SignIn successfull", user });
+        res.status(201).send({ message: "SignIn successfull", user });
       } else {
-        res.status(400).send({ message: "Wrong Password" });
+        res.status(400).send({ message: "Invalid email or password" });
       }
     } else {
       res.status(400).send({ message: "User not found" });
@@ -38,7 +38,7 @@ const signin = async (req, res) => {
 const uploadProfileImage = (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
-      return res.status(500).send({ error: "Error Uploading file" });
+      return res.status(500).send({ message: "Error Uploading file" });
     }
     const { email } = req.body;
     try {
