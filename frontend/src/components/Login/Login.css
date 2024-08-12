@@ -96,3 +96,11 @@ input:focus {
   color: #764ba2;
   text-decoration: underline;
 }
+
+.error {
+  color: #ff4d4d;
+  font-weight: bolder;
+  font-size: 0.875rem; /* Slightly smaller than the input text */
+  margin-top: -0.5rem; /* Negative margin to pull the error message closer to the input */
+  margin-bottom: 0.5rem; /* Space between the error message and the next input */
+}

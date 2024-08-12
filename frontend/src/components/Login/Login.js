@@ -10,46 +10,85 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    const errors = {};
+
+    if (signState === "Sign Up" && !name.trim()) {
+      errors.name = "Username is required";
+    }
+
+    if (!email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+      errors.email = "Invalid email address";
+    }
+
+    if (!password) {
+      errors.password = "Password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters long";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (signState === "Sign Up") {
-      try {
-        const response = await axios.post("http://localhost:5000/user/signup", {
-          name,
-          email,
-          password,
-        });
-        console.log("SignUp Message:", response.data.message);
-        dispatch(signUp({ name, email, password }));
-        setName("");
-        setEmail("");
-        setPassword("");
-        setSignState("Sign In");
-      } catch (error) {
-        console.error("Error signing up:", error);
-      }
-    } else {
-      try {
-        const response = await axios.post("http://localhost:5000/user/signin", {
-          email,
-          password,
-        });
-        console.log("SignIn Message: ", response.data.message);
-        const { name, profileImage, isAdmin } = response.data.user;
-        if (isAdmin) {
-          navigate("/admin-dashboard")
-        } else {
-          dispatch(signIn({ name, email, profileImage }));
+    if (validateForm()) {
+      if (signState === "Sign Up") {
+        try {
+          const response = await axios.post(
+            "http://localhost:5000/user/signup",
+            {
+              name,
+              email,
+              password,
+            }
+          );
+          console.log("SignUp Message:", response.data.message);
+          dispatch(signUp({ name, email, password }));
+          setName("");
           setEmail("");
           setPassword("");
-          navigate("/home");
+          setSignState("Sign In");
+          setServerError("");
+        } catch (error) {
+          console.error("Error signing up:", error);
+          setServerError(error.response?.data?.message);
         }
-      } catch (error) {
-        console.error("Error signing in:", error);
+      } else {
+        try {
+          const response = await axios.post(
+            "http://localhost:5000/user/signin",
+            {
+              email,
+              password,
+            }
+          );
+          console.log("SignIn Message: ", response.data.message);
+          // const {token} = response.data;
+          // localStorage.setItem("authToken",token);
+          const { name, profileImage, isAdmin } = response.data.user;
+          if (isAdmin) {
+            navigate("/admin-dashboard");
+          } else {
+            dispatch(signIn({ name, email, profileImage }));
+            setEmail("");
+            setPassword("");
+            navigate("/home");
+            setServerError("");
+          }
+        } catch (error) {
+          console.error("Error signing in:", error);
+          setServerError(error.response?.data?.message);
+        }
       }
     }
   };
@@ -58,35 +97,39 @@ const Login = () => {
     <div className="container">
       <div className="formContainer">
         <h1 className="heading">{signState}</h1>
-        <form className="form" onSubmit={handleSubmit}>
+        {serverError && <p className="error">{serverError}</p>}
+        <form className="form" onSubmit={handleSubmit} noValidate>
           {signState === "Sign Up" ? (
-            <input
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-              type="text"
-              placeholder="Username"
-            />
+            <>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Username"
+              />
+              {errors.name && <p className="error">{errors.name}</p>}
+            </>
           ) : (
             <></>
           )}
-          <input
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            type="email"
-            placeholder="Email"
-          />
-          <input
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type="password"
-            placeholder="Password"
-          />
+          <>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              placeholder="Email"
+            />
+            {errors.email && <p className="error">{errors.email}</p>}
+          </>
+          <>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="Password"
+            />
+            {errors.password && <p className="error">{errors.password}</p>}
+          </>
           <button className="button" type="submit">
             {signState}
           </button>
