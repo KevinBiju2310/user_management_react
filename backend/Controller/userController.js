@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const upload = require("../Multer/multer");
 const User = require("../Model/userSchema");
+const jwt = require("jsonwebtoken");
 
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -8,7 +9,6 @@ const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
-    console.log("newuser created:", newUser);
     res.status(201).send({ message: "User Created Successfully" });
   } catch (error) {
     res.status(500).send({ error: "Error Creating User" });
@@ -23,7 +23,13 @@ const signin = async (req, res) => {
     if (user) {
       const checkPassword = await bcrypt.compare(password, user.password);
       if (checkPassword) {
-        res.status(201).send({ message: "SignIn successfull", user });
+        const token = jwt.sign(
+          { id: user._id, isAdmin: user.isAdmin },
+          process.env.JWT_SECRET,
+          { expiresIn: "1h" }
+        );
+        console.log("signin token : ", token);
+        res.status(201).send({ message: "SignIn successfull", user, token });
       } else {
         res.status(400).send({ message: "Invalid email or password" });
       }

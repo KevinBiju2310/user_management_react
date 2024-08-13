@@ -72,11 +72,12 @@ const Login = () => {
               password,
             }
           );
+          localStorage.setItem("authToken", response.data.token);
+          console.log(response.data.token);
           console.log("SignIn Message: ", response.data.message);
-          // const {token} = response.data;
-          // localStorage.setItem("authToken",token);
           const { name, profileImage, isAdmin } = response.data.user;
           if (isAdmin) {
+            dispatch(signIn({ name, email, profileImage, isAdmin }));
             navigate("/admin-dashboard");
           } else {
             dispatch(signIn({ name, email, profileImage }));

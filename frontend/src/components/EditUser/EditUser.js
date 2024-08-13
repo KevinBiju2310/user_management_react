@@ -15,8 +15,11 @@ const EditUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          `http://localhost:5000/admin/user/${id}`
+          `http://localhost:5000/admin/user/${id}`,{
+            headers:{Authorization: `Bearer ${token}`}
+          }
         );
         const { name, email, profileImage } = response.data.user;
         setName(name);
@@ -48,9 +51,12 @@ const EditUser = () => {
       if (profileImage) {
         formData.append("profileImage", profileImage);
       }
+      const token = localStorage.getItem("authToken");
       await axios.put(`http://localhost:5000/admin/user/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+
         },
       });
       navigate("/admin-dashboard");

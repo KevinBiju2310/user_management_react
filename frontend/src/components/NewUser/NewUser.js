@@ -20,9 +20,11 @@ const NewUser = () => {
       formData.append("password", password);
       formData.append("profileImage", profileImage);
 
+      const token = localStorage.getItem("authToken")
       await axios.post("http://localhost:5000/admin/newuser", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization:`Bearer ${token}`
         },
       });
 

@@ -18,18 +18,20 @@ const Profile = () => {
       formData.append("email", user.email);
       console.log(formData);
       try {
+        const token = localStorage.getItem("authToken");
         const response = await axios.post(
           "http://localhost:5000/user/upload",
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
             },
           }
         );
         console.log(response.data.message);
         dispatch(signIn(response.data.user));
-        navigate("/home")
+        navigate("/home");
       } catch (error) {
         console.error("Error Uploading file", error);
       }

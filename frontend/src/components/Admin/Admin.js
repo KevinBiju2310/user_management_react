@@ -25,7 +25,13 @@ const Admin = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/admin/users");
+        const token = localStorage.getItem("authToken");
+        console.log(token, "admin");
+        const response = await axios.get("http://localhost:5000/admin/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         console.log("user-frontend", response.data.users);
         setUsers(response.data.users);
         setFilteredUsers(response.data.users);
@@ -58,7 +64,10 @@ const Admin = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:5000/admin/user/${userId}`);
+          const token = localStorage.getItem("authToken"); // Get the token
+          await axios.delete(`http://localhost:5000/admin/user/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` }, // Add the token here
+          });
           setUsers(users.filter((user) => user._id !== userId));
           setFilteredUsers(filteredUsers.filter((user) => user._id !== userId));
           Swal.fire("Deleted!", "User has been deleted.", "success");

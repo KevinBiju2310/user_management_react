@@ -4,8 +4,7 @@ const bcrypt = require("bcryptjs");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({ isAdmin: false });
-    console.log("user-backend", users);
+    const users = await User.find({ isAdmin: false }).sort({ createdAt: -1 });
     res.status(200).json({ message: "User fetched successfully", users });
   } catch (error) {
     res.status(500).send({ error: "Error fetching users" });
