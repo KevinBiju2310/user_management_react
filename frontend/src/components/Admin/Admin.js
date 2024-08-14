@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { logOut } from "../../slices/authSlice";
+import Header from "../Header/Header";
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -64,9 +65,9 @@ const Admin = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const token = localStorage.getItem("authToken"); // Get the token
+          const token = localStorage.getItem("authToken");
           await axios.delete(`http://localhost:5000/admin/user/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` }, // Add the token here
+            headers: { Authorization: `Bearer ${token}` },
           });
           setUsers(users.filter((user) => user._id !== userId));
           setFilteredUsers(filteredUsers.filter((user) => user._id !== userId));
@@ -79,111 +80,106 @@ const Admin = () => {
   };
 
   return (
-    <div className="main-container">
-      <div className="header">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search users..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-            }}
-          />
-          <button onClick={handleSearch}>
-            <FaSearch /> Search
-          </button>
+    <div className="page-wrapper">
+      <Header />
+      <div className="content-wrapper">
+        <div className="main-container">
+          <div className="header">
+            <div className="search-bar">
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                }}
+              />
+              <button onClick={handleSearch}>
+                <FaSearch /> Search
+              </button>
+            </div>
+            <div className="actions">
+              <button onClick={() => navigate("/new-user")}>
+                <FaUserPlus /> Create User
+              </button>
+              <button
+                onClick={() => {
+                  dispatch(logOut());
+                  navigate("/");
+                }}
+              >
+                <FaSignOutAlt /> Logout
+              </button>
+            </div>
+          </div>
+          <div className="list-users">
+            <table>
+              <thead>
+                <tr>
+                  <th>Profile Image</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <>
+                    <tr>
+                      <td colSpan="4">
+                        <div className="shimmer-wrapper"></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colSpan="4">
+                        <div className="shimmer-wrapper"></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colSpan="4">
+                        <div className="shimmer-wrapper"></div>
+                      </td>
+                    </tr>
+                  </>
+                ) : filteredUsers.length > 0 ? (
+                  filteredUsers.map((user) => (
+                    <tr key={user._id}>
+                      <td>
+                        <img
+                          src={
+                            user.profileImage
+                              ? `http://localhost:5000/uploads/${user.profileImage}`
+                              : "https://via.placeholder.com/50"
+                          }
+                          alt="Profile"
+                          style={{ width: "50px", height: "50px" }}
+                        />
+                      </td>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        <button
+                          onClick={() => navigate(`/edit-user/${user._id}`)}
+                        >
+                          <FaEdit /> Edit
+                        </button>
+                        <button onClick={() => handleDelete(user._id)}>
+                          <FaTrashAlt /> Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="no-users-message">
+                      No users found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="actions">
-          <button
-            onClick={() => {
-              navigate("/new-user");
-            }}
-          >
-            {" "}
-            <FaUserPlus /> Create User
-          </button>
-          <button
-            onClick={() => {
-              dispatch(logOut());
-              navigate("/");
-            }}
-          >
-            {" "}
-            <FaSignOutAlt />
-            Logout
-          </button>
-        </div>
-      </div>
-      <div className="list-users">
-        <table>
-          <thead>
-            <tr>
-              <th>Profile Image</th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <>
-                <tr>
-                  <td colSpan="4">
-                    <div className="shimmer-wrapper"></div>
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan="4">
-                    <div className="shimmer-wrapper"></div>
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan="4">
-                    <div className="shimmer-wrapper"></div>
-                  </td>
-                </tr>
-              </>
-            ) : (
-              filteredUsers.map((user) => (
-                <tr key={user._id}>
-                  <td>
-                    <img
-                      src={
-                        user.profileImage
-                          ? `http://localhost:5000/uploads/${user.profileImage}`
-                          : "https://via.placeholder.com/50"
-                      }
-                      alt="Profile"
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                  </td>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        navigate(`/edit-user/${user._id}`);
-                      }}
-                    >
-                      {" "}
-                      <FaEdit /> Edit
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleDelete(user._id);
-                      }}
-                    >
-                      {" "}
-                      <FaTrashAlt />
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
       </div>
     </div>
   );

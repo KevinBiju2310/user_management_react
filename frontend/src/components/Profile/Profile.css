@@ -32,3 +32,10 @@
 .upload-button:hover {
   background-color: #3730a3;
 }
+
+.error-message {
+  font-weight: bolder;
+  color: rgb(230, 17, 17);
+  font-size: 14px;
+  margin-top: 10px;
+}

@@ -10,6 +10,7 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); 
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
 
@@ -35,6 +36,14 @@ const Login = () => {
       errors.password = "Password must be at least 6 characters long";
     }
 
+    if (signState === "Sign Up") {
+      if (!confirmPassword) {
+        errors.confirmPassword = "Confirm Password is required";
+      } else if (password !== confirmPassword) {
+        errors.confirmPassword = "Passwords do not match";
+      }
+    }
+
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -57,6 +66,7 @@ const Login = () => {
           setName("");
           setEmail("");
           setPassword("");
+          setConfirmPassword("");
           setSignState("Sign In");
           setServerError("");
         } catch (error) {
@@ -110,9 +120,7 @@ const Login = () => {
               />
               {errors.name && <p className="error">{errors.name}</p>}
             </>
-          ) : (
-            <></>
-          )}
+          ) : <></>}
           <>
             <input
               value={email}
@@ -131,6 +139,19 @@ const Login = () => {
             />
             {errors.password && <p className="error">{errors.password}</p>}
           </>
+          {signState === "Sign Up" ? (
+            <>
+              <input
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type="password"
+                placeholder="Confirm Password"
+              />
+              {errors.confirmPassword && (
+                <p className="error">{errors.confirmPassword}</p>
+              )}
+            </>
+          ) : <></>}
           <button className="button" type="submit">
             {signState}
           </button>
@@ -138,7 +159,7 @@ const Login = () => {
         <div className="toggleContainer">
           {signState === "Sign Up" ? (
             <p className="toggleText">
-              Already have account?
+              Already have an account?
               <span
                 className="toggleLink"
                 onClick={() => {
@@ -150,7 +171,7 @@ const Login = () => {
             </p>
           ) : (
             <p className="toggleText">
-              Don't have account?
+              Don't have an account?
               <span
                 className="toggleLink"
                 onClick={() => {
