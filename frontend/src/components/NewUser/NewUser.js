@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import styles from "./NewUser.module.css"; 
+import styles from "./NewUser.module.css";
 
 const NewUser = () => {
   const [name, setName] = useState("");
@@ -20,13 +20,17 @@ const NewUser = () => {
       formData.append("password", password);
       formData.append("profileImage", profileImage);
 
-      const token = localStorage.getItem("authToken")
-      await axios.post("http://localhost:5000/admin/newuser", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization:`Bearer ${token}`
-        },
-      });
+      const token = localStorage.getItem("authToken");
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/newuser`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       navigate("/admin-dashboard");
     } catch (error) {

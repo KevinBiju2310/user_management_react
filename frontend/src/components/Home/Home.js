@@ -26,7 +26,7 @@ const Home = () => {
   }
 
   const profileImageUrl = user.profileImage
-    ? `http://localhost:5000/uploads/${user.profileImage}`
+    ? `${process.env.REACT_APP_BACKEND_URL}/uploads/${user.profileImage}`
     : "https://via.placeholder.com/150";
 
   return (

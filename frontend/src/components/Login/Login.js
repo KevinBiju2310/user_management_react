@@ -10,7 +10,7 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); 
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
 
@@ -54,7 +54,7 @@ const Login = () => {
       if (signState === "Sign Up") {
         try {
           const response = await axios.post(
-            "http://localhost:5000/user/signup",
+            `${process.env.REACT_APP_BACKEND_URL}/user/signup`,
             {
               name,
               email,
@@ -76,7 +76,7 @@ const Login = () => {
       } else {
         try {
           const response = await axios.post(
-            "http://localhost:5000/user/signin",
+            `${process.env.REACT_APP_BACKEND_URL}/user/signin`,
             {
               email,
               password,
@@ -120,7 +120,9 @@ const Login = () => {
               />
               {errors.name && <p className="error">{errors.name}</p>}
             </>
-          ) : <></>}
+          ) : (
+            <></>
+          )}
           <>
             <input
               value={email}
@@ -151,7 +153,9 @@ const Login = () => {
                 <p className="error">{errors.confirmPassword}</p>
               )}
             </>
-          ) : <></>}
+          ) : (
+            <></>
+          )}
           <button className="button" type="submit">
             {signState}
           </button>

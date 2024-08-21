@@ -28,11 +28,14 @@ const Admin = () => {
       try {
         const token = localStorage.getItem("authToken");
         console.log(token, "admin");
-        const response = await axios.get("http://localhost:5000/admin/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/users`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         console.log("user-frontend", response.data.users);
         setUsers(response.data.users);
         setFilteredUsers(response.data.users);
@@ -66,9 +69,12 @@ const Admin = () => {
       if (result.isConfirmed) {
         try {
           const token = localStorage.getItem("authToken");
-          await axios.delete(`http://localhost:5000/admin/user/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          await axios.delete(
+            `${process.env.REACT_APP_BACKEND_URL}/admin/user/${userId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           setUsers(users.filter((user) => user._id !== userId));
           setFilteredUsers(filteredUsers.filter((user) => user._id !== userId));
           Swal.fire("Deleted!", "User has been deleted.", "success");
@@ -148,7 +154,7 @@ const Admin = () => {
                         <img
                           src={
                             user.profileImage
-                              ? `http://localhost:5000/uploads/${user.profileImage}`
+                              ? `${process.env.REACT_APP_BACKEND_URL}/uploads/${user.profileImage}`
                               : "https://via.placeholder.com/50"
                           }
                           alt="Profile"

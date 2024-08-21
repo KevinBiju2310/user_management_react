@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import classes from "./EditUser.module.css";
 
+
 const EditUser = () => {
   const { id } = useParams();
   const [name, setName] = useState("");
@@ -17,15 +18,18 @@ const EditUser = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          `http://localhost:5000/admin/user/${id}`,{
-            headers:{Authorization: `Bearer ${token}`}
+          `${process.env.REACT_APP_BACKEND_URL}/admin/user/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         const { name, email, profileImage } = response.data.user;
         setName(name);
         setEmail(email);
         setProfileImage(profileImage);
-        setPreviewImage(`http://localhost:5000/uploads/${profileImage}`);
+        setPreviewImage(
+          `${process.env.REACT_APP_BACKEND_URL}/uploads/${profileImage}`
+        );
       } catch (error) {
         console.error(
           "Error fetching user details: ",
@@ -52,13 +56,16 @@ const EditUser = () => {
         formData.append("profileImage", profileImage);
       }
       const token = localStorage.getItem("authToken");
-      await axios.put(`http://localhost:5000/admin/user/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-
-        },
-      });
+      await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/user/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/admin-dashboard");
     } catch (error) {
       console.log("Error updating user: ", error.response.data.message);

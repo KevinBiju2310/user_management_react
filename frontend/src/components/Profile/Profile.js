@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./Profile.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { signIn } from "../../slices/authSlice";
+import { updateUser } from "../../slices/authSlice";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const Profile = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.post(
-          "http://localhost:5000/user/upload",
+          `${process.env.REACT_APP_BACKEND_URL}/user/upload`,
           formData,
           {
             headers: {
@@ -61,7 +61,7 @@ const Profile = () => {
           }
         );
         console.log(response.data.message);
-        dispatch(signIn(response.data.user));
+        dispatch(updateUser(response.data.user));
         navigate("/home");
       } catch (error) {
         console.error("Error Uploading file", error);
